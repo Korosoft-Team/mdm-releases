@@ -27,6 +27,20 @@ Linux. No forma parte de la entrega y no hay obligación de publicarlo.
 Los tres repositorios de código son **privados** y permanecen en custodia del equipo de desarrollo
 hasta la suscripción del acta de cesión (Cláusula Octava 8.4). **Este repositorio no contiene código.**
 
+### Estado de la integración en las tres aplicaciones
+
+| Aplicación | Implementación | Estado |
+|---|---|---|
+| **Estudiante** | `mdm-estudiante` PR #316 (referencia) | Escrita y verificada en local |
+| **Docente** (visor) | `mdm-docente` PR #39 | Escrita y verificada en local |
+| **Gestor de contenido** | `mdm-gestor` PR (rama `feat/updater-gestor`) | Escrita y verificada en local |
+
+**Ninguna está fusionada todavía**, y **el canal no ha servido ninguna actualización**: falta crear los
+secretos de firma y el `RELEASES_TOKEN` en cada repositorio, y publicar la primera versión. Hasta que
+alguien instale esa primera versión y la vea actualizarse sola, **el canal no está probado**.
+
+Para replicar el patrón, o para revisar qué se hizo: [`docs/replicar-en-otra-app.md`](./docs/replicar-en-otra-app.md).
+
 ---
 
 ## 2. Cómo se instalan las aplicaciones
