@@ -3,14 +3,19 @@
 # Sustituir en todo el archivo:
 #   <APP>      → estudiante | docente | gestor
 #   <DIR>      → app-estudiante | app-docente | app-gestor
-#   <PRODUCTO> → MDM MultiCulture.Play - Estudiante | - Docente | - Gestor
 #
-# Secretos requeridos en el repositorio de la aplicación:
-#   TAURI_SIGNING_PRIVATE_KEY, TAURI_SIGNING_PRIVATE_KEY_PASSWORD, RELEASES_TOKEN
+# Requisitos previos, en el repositorio de la aplicación:
+#   - `tauri-plugin-updater` instalado y configurado (ver docs/integracion-app.md)
+#   - `bundle.createUpdaterArtifacts: true` y `bundle.targets: ["nsis"]`
+#   - Rust >= 1.90 en el runner
+#   - Secretos: TAURI_SIGNING_PRIVATE_KEY, TAURI_SIGNING_PRIVATE_KEY_PASSWORD, RELEASES_TOKEN
+#
+# Entrega SOLO Windows: los equipos de LA CONTRATANTE son Windows, y el actualizador reutiliza el
+# instalador NSIS. Linux/AppImage queda para el entorno de desarrollo de quien programa desde Linux.
 #
 # ESTADO: plantilla escrita y documentada, TODAVÍA NO EJECUTADA. No se considera válida hasta que
 # exista una release real en mdm-releases con su latest.json y una instalación que se haya
-# actualizado sola. Ver README.md, sección 5.
+# actualizado sola. Ver README.md, sección 6.
 
 name: Publicar versión firmada
 
@@ -27,19 +32,9 @@ env:
   DIR: <DIR>
 
 jobs:
-  # ── 1. Compilar y firmar, en las dos plataformas que se autoactualizan ─────────────────────────
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-22.04
-            target: linux-x86_64
-            bundles: appimage
-          - os: windows-latest
-            target: windows-x86_64
-            bundles: nsis
-    runs-on: ${{ matrix.os }}
+  # ── Compilar, firmar y publicar ────────────────────────────────────────────────────────────────
+  publicar:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -53,87 +48,90 @@ jobs:
           cache: pnpm
           cache-dependency-path: ${{ env.DIR }}/pnpm-lock.yaml
 
+      # El plugin exige Rust >= 1.90.
       - uses: dtolnay/rust-toolchain@stable
-
-      - name: Dependencias de sistema (Linux)
-        if: matrix.os == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file \
-            libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
 
       - name: Instalar dependencias del frontend
         working-directory: ${{ env.DIR }}
         run: pnpm install --frozen-lockfile
+
+      # Sin createUpdaterArtifacts no se genera el .sig, y el canal no sirve para nada.
+      - name: Comprobar que el updater está configurado
+        shell: pwsh
+        working-directory: ${{ env.DIR }}/src-tauri
+        run: |
+          $c = Get-Content tauri.conf.json -Raw | ConvertFrom-Json
+          if (-not $c.bundle.createUpdaterArtifacts) {
+            throw "bundle.createUpdaterArtifacts debe ser true, o no habrá artefactos ni firmas"
+          }
+          if (-not $c.plugins.updater.pubkey) { throw "falta plugins.updater.pubkey" }
+          if (-not $c.plugins.updater.endpoints) { throw "falta plugins.updater.endpoints" }
+          Write-Host "version publicada: $($c.version)"
 
       - name: Compilar, firmar y empaquetar
         working-directory: ${{ env.DIR }}
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-        run: pnpm tauri build --bundles ${{ matrix.bundles }}
+        run: pnpm tauri build --bundles nsis
 
-      - name: Guardar artefactos de esta plataforma
+      - name: Guardar el instalador y su firma
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP }}-${{ matrix.target }}
+          name: instalador-firmado
           if-no-files-found: error
           path: |
-            ${{ env.DIR }}/src-tauri/target/release/bundle/nsis/*.nsis.zip
-            ${{ env.DIR }}/src-tauri/target/release/bundle/nsis/*.nsis.zip.sig
             ${{ env.DIR }}/src-tauri/target/release/bundle/nsis/*-setup.exe
-            ${{ env.DIR }}/src-tauri/target/release/bundle/appimage/*.AppImage.tar.gz
-            ${{ env.DIR }}/src-tauri/target/release/bundle/appimage/*.AppImage.tar.gz.sig
-            ${{ env.DIR }}/src-tauri/target/release/bundle/appimage/*.AppImage
-
-  # ── 2. Publicar en el canal y actualizar el endpoint del sitio ─────────────────────────────────
-  publicar:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: artefactos
-          merge-multiple: true
+            ${{ env.DIR }}/src-tauri/target/release/bundle/nsis/*-setup.exe.sig
 
       - name: Versión publicada
         id: v
-        run: echo "version=${GITHUB_REF_NAME#<APP>-v}" >> "$GITHUB_OUTPUT"
+        shell: pwsh
+        run: |
+          $v = "${env:GITHUB_REF_NAME}" -replace '^<APP>-v', ''
+          "version=$v" >> $env:GITHUB_OUTPUT
 
       - name: Crear la release en el canal público
+        shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.RELEASES_TOKEN }}
         run: |
-          gh release create "${APP}-v${{ steps.v.outputs.version }}" \
-            --repo Korosoft-Team/mdm-releases \
-            --title "<PRODUCTO> ${{ steps.v.outputs.version }}" \
-            --notes "Versión ${{ steps.v.outputs.version }} de la aplicación <APP>. Ver el detalle de cambios en este repositorio." \
-            artefactos/*
+          gh release create "${env:APP}-v${{ steps.v.outputs.version }}" `
+            --repo Korosoft-Team/mdm-releases `
+            --title "${{ env.APP }} ${{ steps.v.outputs.version }}" `
+            --notes "Versión ${{ steps.v.outputs.version }}. Detalle de cambios en el repositorio de la aplicación." `
+            ../artefactos/*
 
-      - name: Actualizar latest.json en la rama del sitio
+      - name: Actualizar latest.json del sitio
+        shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.RELEASES_TOKEN }}
         run: |
-          set -euo pipefail
-          V="${{ steps.v.outputs.version }}"
-          BASE="https://github.com/Korosoft-Team/mdm-releases/releases/download/${APP}-v${V}"
-          # Las firmas son el contenido literal de los .sig, no su ruta.
-          SIG_WIN=$(cat artefactos/*.nsis.zip.sig)
-          SIG_LIN=$(cat artefactos/*.AppImage.tar.gz.sig)
-          WIN=$(basename "$(ls artefactos/*.nsis.zip)")
-          LIN=$(basename "$(ls artefactos/*.AppImage.tar.gz)")
-          jq -n --arg v "$V" --arg w "$SIG_WIN" --arg wu "$BASE/$WIN" \
-                --arg l "$SIG_LIN" --arg lu "$BASE/$LIN" --arg d "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            '{version:$v, notes:"", pub_date:$d,
-              platforms:{"windows-x86_64":{signature:$w,url:$wu},
-                         "linux-x86_64":{signature:$l,url:$lu}}}' > latest.json
-          git clone --depth 1 --branch updates \
-            "https://x-access-token:${GH_TOKEN}@github.com/Korosoft-Team/mdm-releases.git" sitio
-          mkdir -p "sitio/${APP}"
-          mv latest.json "sitio/${APP}/latest.json"
-          cd sitio
-          git config user.name "publicacion-automatica"
+          $v   = "${{ steps.v.outputs.version }}"
+          $app = "${{ env.APP }}"
+          $exe = (Get-ChildItem -Recurse -Filter *-setup.exe      | Select-Object -First 1).Name
+          $sig = (Get-ChildItem -Recurse -Filter *-setup.exe.sig  | Select-Object -First 1)
+          # La firma es el CONTENIDO del .sig, no su ruta ni una URL.
+          $firma = (Get-Content $sig.FullName -Raw).Trim()
+          $url = "https://github.com/Korosoft-Team/mdm-releases/releases/download/$app-v$v/$exe"
+
+          $json = [ordered]@{
+            version  = $v
+            notes    = ""
+            pub_date = (Get-Date -AsUTC).ToString("yyyy-MM-ddTHH:mm:ssZ")
+            platforms = [ordered]@{
+              "windows-x86_64" = [ordered]@{ signature = $firma; url = $url }
+            }
+          }
+          New-Item -ItemType Directory -Force -Path sitio/$app | Out-Null
+          $json | ConvertTo-Json -Depth 5 | Set-Content "sitio/$app/latest.json" -Encoding utf8
+
+          git clone --depth 1 --branch updates `
+            "https://x-access-token:${env:GH_TOKEN}@github.com/Korosoft-Team/mdm-releases.git" canal
+          Copy-Item "sitio/$app/latest.json" "canal/$app/latest.json" -Force
+          cd canal
+          git config user.name  "publicacion-automatica"
           git config user.email "publicacion@korosoft.invalid"
           git add -A
-          git commit -m "publicacion(${APP}): $V"
+          git commit -m "publicacion(${app}): $v"
           git push origin updates
