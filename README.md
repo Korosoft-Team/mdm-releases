@@ -138,9 +138,14 @@ nombres de archivo y las rutas, está en [`docs/integracion-app.md`](./docs/inte
 1. El plugin `tauri-plugin-updater` como dependencia.
 2. **`bundle.createUpdaterArtifacts: true`** — sin esto **no se generan los artefactos de actualización
    ni sus firmas**.
-3. `bundle.targets` con **`["nsis"]`** (hoy está en `"all"` en las tres apps).
+3. `bundle.targets` **se queda en `"all"`**, y el build de entrega pasa `--bundles nsis`. Fijarlo en
+   `["nsis"]` **rompe `pnpm tauri build` en Linux**, que es el entorno de desarrollo de quien programa
+   desde ahí. La entrega no depende de ese valor: depende del argumento del comando.
 4. `plugins.updater.pubkey` y `plugins.updater.endpoints`.
-5. El permiso **`updater:default`** en las capacidades, o la API queda bloqueada.
+5. **Solo si se usa la API de JavaScript**: el permiso **`updater:default`** en las capacidades, o la
+   API del plugin queda bloqueada para el frontend. **La implementación de referencia no lo necesita**,
+   porque hace la comprobación desde Rust. Ver
+   [`replicar-en-otra-app.md`](./replicar-en-otra-app.md).
 6. La comprobación al arrancar, con su aviso al usuario.
 
 ---
@@ -155,12 +160,17 @@ nombres de archivo y las rutas, está en [`docs/integracion-app.md`](./docs/inte
 | `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | contraseña de la clave privada |
 | `RELEASES_TOKEN` | token de grano fino con `contents: write` **solo** en este repositorio: es lo que permite subir el artefacto desde un repositorio privado. El `GITHUB_TOKEN` **no** cruza repositorios |
 
-**Pasos (plantilla en [`templates/publish-app.yml`](./templates/publish-app.yml)):**
+**Pasos y archivo de referencia:**
+[`docs/replicar-en-otra-app.md`](./replicar-en-otra-app.md), que apunta al **workflow ya probado** en
+`mdm-estudiante` (PR #316) y dice exactamente qué cambiar por aplicación. **No hay copias sueltas del
+workflow**: la plantilla anterior en `templates/` se retiró justamente para que no divergieran.
 
 1. **Subir la versión en `tauri.conf.json`** y etiquetar. La versión publicada debe ser **mayor** que la
-   instalada, o el actualizador no hará nada.
+   instalada, o el actualizador no hará nada. El workflow **falla** si la etiqueta y el archivo no
+   coinciden.
 2. El workflow compila en `windows-latest` con `tauri build --bundles nsis`.
-3. Con la clave en el entorno, Tauri genera el instalador y **su `.sig`**.
+3. Con la clave en el entorno, Tauri genera el instalador y **su `.sig`**. Si no aparece, el workflow
+   **falla** en vez de publicar algo inservible.
 4. Se crea la release en **este** repositorio con el `-setup.exe` y su `.sig`.
 5. Se actualiza `updates/<app>/latest.json` en la rama del sitio.
 

@@ -38,7 +38,7 @@ pnpm add @tauri-apps/plugin-process
 {
   "version": "0.2.0",                    // subir en CADA publicación: si no es mayor, no hay actualización
   "bundle": {
-    "targets": ["nsis"],                 // hoy dice "all": eso genera .deb y .rpm, que no se actualizan
+    "targets": "all",                     // NO fijar en ["nsis"]: rompe el build de Linux
     "createUpdaterArtifacts": true,       // SIN ESTO NO SE GENERAN LOS ARTEFACTOS NI LAS FIRMAS
     "windows": {
       "nsis": {
