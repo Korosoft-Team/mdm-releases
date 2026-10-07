@@ -39,7 +39,12 @@ pnpm add @tauri-apps/plugin-process
   "version": "0.2.0",                    // subir en CADA publicación: si no es mayor, no hay actualización
   "bundle": {
     "targets": ["nsis"],                 // hoy dice "all": eso genera .deb y .rpm, que no se actualizan
-    "createUpdaterArtifacts": true       // SIN ESTO NO SE GENERAN LOS ARTEFACTOS NI LAS FIRMAS
+    "createUpdaterArtifacts": true,       // SIN ESTO NO SE GENERAN LOS ARTEFACTOS NI LAS FIRMAS
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser"      // decisión del 7 de octubre: por usuario, para no pedir administrador
+      }
+    }
   },
   "plugins": {
     "updater": {
@@ -73,11 +78,15 @@ Son **dos ajustes distintos** y conviene no confundirlos:
 | `bundle.windows.nsis.installMode` | `bundle` | **Dónde** se instala: `currentUser` (por defecto), `perMachine` o `both` |
 | `plugins.updater.windows.installMode` | `plugins.updater` | **Cómo** se ve la instalación de la actualización: `passive` (por defecto), `basicUi` o `quiet` |
 
-Recomendación para estos equipos: **instalación por usuario (`currentUser`) con `passive`**, para que la
-actualización no pida permisos de administrador en cada laptop. Con `quiet` el instalador **no puede
-pedir privilegios por sí solo**: la propia documentación advierte que solo sirve para instalaciones por
-usuario. Si se instala `perMachine`, la actualización necesitará elevación y conviene `passive` para que
-Windows pueda mostrarla.
+### Decisión tomada el 7 de octubre de 2026
+
+| Ajuste | Valor decidido | Motivo |
+|---|---|---|
+| `bundle.windows.nsis.installMode` | **`currentUser`** | Las actualizaciones **no piden permisos de administrador** en cada laptop |
+| `plugins.updater.windows.installMode` | **`passive`** | Barra de progreso pequeña, sin intervención del docente |
+
+`quiet` queda **descartado**: no puede pedir privilegios por sí solo, así que solo serviría en
+instalaciones por usuario y a cambio pierde todo aviso visible para el docente.
 
 ---
 

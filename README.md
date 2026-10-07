@@ -42,9 +42,12 @@ y en Linux solo la AppImage se actualiza sola.
 
 > **Aviso de Windows SmartScreen.** Los instaladores **no están firmados con certificado Authenticode**,
 > así que Windows mostrará el aviso «Windows protegió su PC». Se continúa con *Más información* →
-> *Ejecutar de todas formas*. **Esto debe quedar escrito en la guía de instalación y explicado en la
-> capacitación**, para que el docente no lo tome por un defecto. La firma **minisign** de este canal
-> (sección 4) es otra cosa: verifica las actualizaciones, **no** elimina ese aviso.
+> *Ejecutar de todas formas*. La firma **minisign** de este canal (sección 4) es otra cosa: verifica las
+> actualizaciones, **no** elimina ese aviso.
+>
+> **Decisión tomada (7 de octubre de 2026):** se entrega **sin** certificado de firma de código y el
+> aviso **se declara en la guía de instalación y se explica en la capacitación**, para que el docente no
+> lo tome por un defecto.
 
 ---
 
@@ -66,6 +69,45 @@ Propiedades de este diseño, dichas explícitamente:
 - **Exige HTTPS** (GitHub Pages lo es). Se puede desactivar esa exigencia con
   `dangerousInsecureTransportProtocol`, y **no se va a hacer**.
 - **Requiere Rust ≥ 1.90** en el entorno de compilación.
+
+### De dónde saca la actualización una aplicación ya instalada
+
+**Del repositorio público, nunca del código privado.** Esa es toda la respuesta, y conviene verla entera
+porque es la confusión más frecuente:
+
+```text
+[ repositorio de código  PRIVADO ]
+        │   (1) el CI compila y firma con la clave privada
+        v
+[ mdm-releases  PUBLICO ]          (2) recibe el -setup.exe, su .sig y el latest.json
+        │
+        │   (3) HTTPS sin credenciales: cualquier app lo descarga
+        v
+[ aplicacion instalada en la laptop ]
+        (4) pide <app>/latest.json al abrirse
+        (5) compara la version publicada con la suya
+        (6) descarga el instalador desde la release publica
+        (7) VERIFICA LA FIRMA con la clave publica incrustada en su propio binario
+        (8) si coincide, instala y se reinicia; si no, no instala absolutamente nada
+```
+
+El repositorio privado **solo participa cuando publicamos**, y para eso el CI usa un token
+(`RELEASES_TOKEN`) que vive en los secretos del repositorio, **nunca dentro de la aplicación**.
+
+Esta es exactamente la razón por la que el canal es público: si las apps tuvieran que leer un
+repositorio privado, llevarían un token dentro y **cualquiera podría extraerlo del binario**. Publicar
+los binarios evita eso, y el código fuente sigue privado.
+
+Tres consecuencias prácticas:
+
+- **La aplicación no necesita cuenta ni autenticación** para actualizarse, y **no consulta la API de
+  GitHub**: son descargas de archivos (`github.io` y los adjuntos de la release), así que no hay límite
+  de peticiones.
+- **Una aplicación instalada sin el plugin del actualizador no se actualiza nunca**, por muy bien que
+  funcione el canal: no lleva el mecanismo dentro. Ver la sección 5 y
+  [`docs/integracion-app.md`](./docs/integracion-app.md).
+- **La versión publicada tiene que ser mayor** que la instalada. Se sube en `tauri.conf.json` antes de
+  etiquetar, o el actualizador no hace nada.
 
 ---
 
