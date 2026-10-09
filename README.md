@@ -166,6 +166,15 @@ nombres de archivo y las rutas, está en [`docs/integracion-app.md`](./docs/inte
 
 ## 6. Cómo se publica una versión
 
+> **Esta es la única compilación que queda en GitHub, y es deliberada.** Mientras el producto está en
+> desarrollo, **GitHub no compila**: los workflows `tests.yml` de los tres repositorios de aplicación
+> y `demo-windows.yml` de la app del estudiante están **deshabilitados a propósito** (ADR-015 en
+> `mdm-gestor`), y la verificación se hace en local y se reporta en el PR. La publicación es la
+> excepción porque el instalador NSIS de Windows **no se puede construir desde Linux**: se compila en
+> el runner de Windows, y **solo** cuando alguien crea a propósito una etiqueta de versión
+> (`estudiante-v*`, `docente-v*`, `gestor-v*`). No corre en pushes ni en PRs. Este repositorio, además,
+> no tiene workflows propios: solo artefactos.
+
 **Secretos necesarios en cada repositorio de aplicación:**
 
 | Secreto | Para qué |
