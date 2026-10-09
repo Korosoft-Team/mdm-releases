@@ -175,18 +175,47 @@ nombres de archivo y las rutas, está en [`docs/integracion-app.md`](./docs/inte
 > (`estudiante-v*`, `docente-v*`, `gestor-v*`). No corre en pushes ni en PRs. Este repositorio, además,
 > no tiene workflows propios: solo artefactos.
 
-**Secretos necesarios en cada repositorio de aplicación:**
+**Lo que se hace UNA SOLA VEZ (configuración inicial)**
 
-| Secreto | Para qué |
-|---|---|
-| `TAURI_SIGNING_PRIVATE_KEY` | firmar el artefacto |
-| `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | contraseña de la clave privada |
-| `RELEASES_TOKEN` | token de grano fino con `contents: write` **solo** en este repositorio: es lo que permite subir el artefacto desde un repositorio privado. El `GITHUB_TOKEN` **no** cruza repositorios |
+Tres secretos por repositorio de aplicación:
 
-**Pasos y archivo de referencia:**
-[`docs/replicar-en-otra-app.md`](./replicar-en-otra-app.md), que apunta al **workflow ya probado** en
-`mdm-estudiante` (PR #316) y dice exactamente qué cambiar por aplicación. **No hay copias sueltas del
-workflow**: la plantilla anterior en `templates/` se retiró justamente para que no divergieran.
+| Secreto | Para qué | Quién lo aporta |
+|---|---|---|
+| `TAURI_SIGNING_PRIVATE_KEY` | firmar el artefacto | el equipo: `~/.config/mdm/updater/updater.key` |
+| `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | contraseña de la clave privada | el equipo: `~/.config/mdm/updater/updater.key.password` |
+| `RELEASES_TOKEN` | subir el artefacto a **este** repositorio desde un repositorio privado: el `GITHUB_TOKEN` **no** cruza repositorios | **el responsable de la cuenta** (ver abajo) |
+
+Se publican con el script del equipo, que lee los valores de los archivos y no los imprime:
+
+```bash
+# 1. el responsable crea el token y lo guarda (permisos 600), nunca en el chat:
+#    ~/.config/mdm/updater/releases.token
+# 2. se publican los nueve secretos (tres por repositorio):
+bash ~/.config/mdm/updater/publicar-secretos.sh
+```
+
+**El `RELEASES_TOKEN` es lo único que no puede automatizar el agente, y conviene entender por qué:**
+GitHub **no expone ninguna API para crear tokens**; hay que generarlos desde la cuenta. Y las **claves
+de despliegue SSH no son una alternativa en esta organización**: GitHub las rechaza en los cuatro
+repositorios (`Deploy keys are disabled for this repository`, verificado el 2026-10-09), así que el
+camino por SSH no existe y el token de la API es la única vía. Alcance mínimo recomendado:
+
+- **Token de grano fino** (preferido): *Repository access* → **Only select repositories** →
+  `mdm-releases`; *Permissions* → **Contents: Read and write**. No toca ningún repositorio privado.
+- **Token clásico** (alternativa): marcar **solo `public_repo`**. Alcanza para este repositorio, que
+  es público, y no da acceso a los repositorios privados del equipo.
+
+> **Por qué el token no viaja dentro de las aplicaciones:** vive como secreto cifrado en cada
+> repositorio y solo lo leen los workflows de ese repositorio. La app instalada descarga de este canal
+> **sin credenciales**, que es justamente el motivo de que este repositorio sea público y no contenga
+> código.
+
+**Lo que YA ES AUTOMÁTICO (cada versión)**
+
+Archivo de referencia: [`docs/replicar-en-otra-app.md`](./replicar-en-otra-app.md), que apunta al
+**workflow ya probado** en `mdm-estudiante` (PR #316) y dice exactamente qué cambiar por aplicación.
+**No hay copias sueltas del workflow**: la plantilla anterior en `templates/` se retiró justamente para
+que no divergieran.
 
 1. **Subir la versión en `tauri.conf.json`** y etiquetar. La versión publicada debe ser **mayor** que la
    instalada, o el actualizador no hará nada. El workflow **falla** si la etiqueta y el archivo no
@@ -196,6 +225,9 @@ workflow**: la plantilla anterior en `templates/` se retiró justamente para que
    **falla** en vez de publicar algo inservible.
 4. Se crea la release en **este** repositorio con el `-setup.exe` y su `.sig`.
 5. Se actualiza `updates/<app>/latest.json` en la rama del sitio.
+
+Nada de eso se hace a mano: la etiqueta es la única acción y el resto encadena solo. Lo que la
+etiqueta **no** puede hacer por sí solo es existir: crearla es la decisión de publicar.
 
 > **Estado de esta plantilla: no ejecutada todavía.** No se considera válida hasta que exista una release
 > real con su `latest.json` y una instalación que se haya actualizado sola.
