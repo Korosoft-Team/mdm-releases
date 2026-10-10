@@ -31,13 +31,22 @@ hasta la suscripción del acta de cesión (Cláusula Octava 8.4). **Este reposit
 
 | Aplicación | Implementación | Estado |
 |---|---|---|
-| **Estudiante** | `mdm-estudiante` PR #316 (referencia) | Escrita y verificada en local |
-| **Docente** (visor) | `mdm-docente` PR #39 | Escrita y verificada en local |
-| **Gestor de contenido** | `mdm-gestor` PR (rama `feat/updater-gestor`) | Escrita y verificada en local |
+| **Estudiante** | `mdm-estudiante` PR #316 | **Fusionada** · publicada como `estudiante-v0.1.0` |
+| **Docente** (visor) | `mdm-docente` PR #39 | **Fusionada** · publicada como `docente-v0.1.0` |
+| **Gestor de contenido** | `mdm-gestor` PR #109 | **Fusionada** · publicada como `gestor-v0.1.0` |
 
-**Ninguna está fusionada todavía**, y **el canal no ha servido ninguna actualización**: falta crear los
-secretos de firma y el `RELEASES_TOKEN` en cada repositorio, y publicar la primera versión. Hasta que
-alguien instale esa primera versión y la vea actualizarse sola, **el canal no está probado**.
+**El canal ya sirve las tres versiones**: cada release trae el instalador NSIS con su `.sig` y los tres
+`latest.json` responden en la rama del sitio. Los secretos de firma y el `RELEASES_TOKEN` están cargados
+en los tres repositorios de aplicación, y las tres publicaciones se ejecutaron de punta a punta.
+
+**Lo que falta para darlo por probado**: que alguien **instale** una de esas versiones en un equipo y la
+vea actualizarse sola al publicar la siguiente. Hasta entonces el circuito está publicado y verificado
+pieza por pieza, pero no recorrido completo.
+
+> **Aviso**: los instaladores publicados traen horneada la dirección del servidor
+> (`VITE_API_URL`, por defecto `http://localhost:8080`). La **actualización funciona igual** —habla con
+> este canal, que es público—, pero la aplicación no alcanzará ningún servidor hasta que se publique una
+> versión con la dirección real del VPS del Grupo.
 
 Para replicar el patrón, o para revisar qué se hizo: [`docs/replicar-en-otra-app.md`](./docs/replicar-en-otra-app.md).
 
@@ -229,8 +238,14 @@ que no divergieran.
 Nada de eso se hace a mano: la etiqueta es la única acción y el resto encadena solo. Lo que la
 etiqueta **no** puede hacer por sí solo es existir: crearla es la decisión de publicar.
 
-> **Estado de esta plantilla: no ejecutada todavía.** No se considera válida hasta que exista una release
-> real con su `latest.json` y una instalación que se haya actualizado sola.
+> **Estado de este mecanismo: ejecutado y funcionando.** Las tres aplicaciones se publicaron con este
+> flujo (`estudiante-v0.1.0`, `docente-v0.1.0`, `gestor-v0.1.0`), con instalador firmado y `latest.json`
+> servido. Lo que **no** está probado todavía es el último tramo: una instalación que se actualice sola.
+>
+> **Dos avisos conocidos** de la revisión nativa, pendientes de arreglo (no bloquean):
+> `gh release create` falla si la release ya existe, así que un reintento de la misma versión necesita
+> `gh release delete <tag> --repo Korosoft-Team/mdm-releases --yes` antes; y el workflow crea
+> `sitio/<app>` pero no `canal/<app>`, así que una aplicación nueva fallaría al copiar el `latest.json`.
 
 ---
 
