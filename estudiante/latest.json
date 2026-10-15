@@ -1,11 +1,11 @@
 {
   "version": "0.1.2",
   "notes": "Acceso del alumno con apodo y codigo diario de la clase.",
-  "pub_date": "2026-10-15T22:53:49Z",
+  "pub_date": "2026-10-15T22:55:25Z",
   "platforms": {
     "windows-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUN09xVzdEaFFkZWREUVNkNVVDQk1KUGw0VU5UK0l1VVRkOW5HWGVQMEZvVEUrRllIdHNQSU5zSUN1TWtkbjlSM1ZVL3BXT2pobmhGbVBqdVZWcDEzdHFMR0YyTGh6OEE0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkyMTA0Nzk3CWZpbGU6TURNIE11bHRpQ3VsdHVyZS5QbGF5IC0gRXN0dWRpYW50ZV8wLjEuMl94NjQtc2V0dXAuZXhlCjYyZW1VbmZiVjUxQ0dBQmpROTQ3OGRtMlZ0cFBoTlZIeTRvWWIzVGNtZktLZVErWWd1MUxvTTBWay9BVVZ6MnUvcUlUQ1Q2aDVFTDJiN1g2V1FrZkR3PT0K",
-      "url": "https://github.com/Korosoft-Team/mdm-releases/releases/download/estudiante-v0.1.2/MDM MultiCulture.Play - Estudiante_0.1.2_x64-setup.exe"
+      "url": "https://github.com/Korosoft-Team/mdm-releases/releases/download/estudiante-v0.1.2/MDM.MultiCulture.Play.-.Estudiante_0.1.2_x64-setup.exe"
     }
   }
 }
