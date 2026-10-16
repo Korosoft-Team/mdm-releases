@@ -1,11 +1,11 @@
 {
-  "version": "0.1.1",
-  "notes": "Version 0.1.1",
-  "pub_date": "2026-10-16T01:41:19Z",
+  "version": "0.1.2",
+  "notes": "Version 0.1.2",
+  "pub_date": "2026-10-16T05:18:20Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUN09xVzdEaFFkZVJHZlhCQ1lPWU00Y01WMjV3a2JTcFkwbGoyUUg5Vjc1c0YrSGg3TmNzNGlaNG95VEkrUDZlNmhuRUJwWCtyTDhMU1loc2ZjclQ0djBrTXVnMXZ6aXdZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkyMTE0ODA3CWZpbGU6TURNIE11bHRpQ3VsdHVyZS5QbGF5IC0gRG9jZW50ZV8wLjEuMV94NjQtc2V0dXAuZXhlClo4RmQvdDdidmZ2MG5kUHo4Y3JvUVRrK2FRZjRoZnBBcmVwb0lETWtVNEZodUxkeFplNXNvV2d6cUExUGFiWEI4ejNlZTZRYzl3UmVJSnV4YXVtYUN3PT0K",
-      "url": "https://github.com/Korosoft-Team/mdm-releases/releases/download/docente-v0.1.1/MDM.MultiCulture.Play.-.Docente_0.1.1_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUN09xVzdEaFFkZVFBRXl6Rmg4MkVYVGFldi92bmdCd2hEVUYyN1YxTjBkZERCaFlSODk5UnF0Z2I2T3lYTnpKOEVaQnllck9hcUxYRWxIaDNmYmNPb1JRaDRTY2ExdlFvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkyMTI3ODkxCWZpbGU6TURNIE11bHRpQ3VsdHVyZS5QbGF5IC0gRG9jZW50ZV8wLjEuMl94NjQtc2V0dXAuZXhlCmJtUXBJT2RlZGFadnpLV05wSEswRVdyUzhLZERkS1VPdjRLaVVFYWNOWEdlZHN4d2p0ZHJTMEh2cklQanBHV29Za3RyamtmTDlzODNkOU82MXFWY0RRPT0K",
+      "url": "https://github.com/Korosoft-Team/mdm-releases/releases/download/docente-v0.1.2/MDM.MultiCulture.Play.-.Docente_0.1.2_x64-setup.exe"
     }
   }
 }
