@@ -1,11 +1,11 @@
 {
-  "version": "0.1.8",
-  "notes": "Version 0.1.8",
-  "pub_date": "2026-10-18T02:46:50Z",
+  "version": "0.1.9",
+  "notes": "Version 0.1.9",
+  "pub_date": "2026-10-18T03:29:48Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUN09xVzdEaFFkZVRaN1pFdWtVU2ZMNGJSUTcrTmJHbU9sQTUvd3JTdXlBWjFTUE90MldRWi9Nb2ZLSWxodHltVURYN3VzVTBNUkJrQkZSYnVoYUs2WTdBbW40RS84c3d3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkyMjkxNTc1CWZpbGU6TURNIE11bHRpQ3VsdHVyZS5QbGF5IC0gRXN0dWRpYW50ZV8wLjEuOF94NjQtc2V0dXAuZXhlCjNrSHVsZjZnUVQzYzNrTmR2QjIxdnlIUXJ6MXp3THhSUnlyTEdaQURIQVVTZlZlT1dMU1FsMmc3QmEyM0hiNCszL1h1ZHE1V3hIMWdvUHgycVNkd0F3PT0K",
-      "url": "https://github.com/Korosoft-Team/mdm-releases/releases/download/estudiante-v0.1.8/MDM.MultiCulture.Play.-.Estudiante_0.1.8_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUN09xVzdEaFFkZVV6UHl2QVJHR2p3MEZQT0duN0hCQjNMK2FnVFhqK05YekVJRlZhdjZZUHZRNTFMR2dHQUlIUmVPaWVWczVtd3dQRWNQaGlrWGltZC9uaDhBRmlqaWdNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkyMjk0MTY0CWZpbGU6TURNIE11bHRpQ3VsdHVyZS5QbGF5IC0gRXN0dWRpYW50ZV8wLjEuOV94NjQtc2V0dXAuZXhlCjlXYVlyTVdzZTh4eDUzL3hSdDlXM1BlcTRPdE9OcjhKV1p4K3NDREtMN3Z5TXVJSy91RXQzZ3pyaXRBU0R0aklJN084TDQ1MkNKek0xOVZhZWwwSENRPT0K",
+      "url": "https://github.com/Korosoft-Team/mdm-releases/releases/download/estudiante-v0.1.9/MDM.MultiCulture.Play.-.Estudiante_0.1.9_x64-setup.exe"
     }
   }
 }
