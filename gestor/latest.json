@@ -1,11 +1,11 @@
 {
-  "version": "0.1.6",
+  "version": "0.1.7",
   "notes": "",
-  "pub_date": "2026-11-23T12:25:22Z",
+  "pub_date": "2026-11-24T07:43:50Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUV2k4N3JYMzNrbXhzUS9EWGVqUEExSlZyWDlQODg0K2R1MW96M3ByWEM3Ym5ab29uTkVEZFdGUWpFbjRlNzBxZ3JHUWZyYWsxdjNqRVp2cVJtVnBHeG9CeHJjakE1SXdRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NDM2NzEwCWZpbGU6TURNIE11bHRpQ3VsdHVyZS5QbGF5IC0gR2VzdG9yXzAuMS42X3g2NC1zZXR1cC5leGUJdmVyc2lvbjowLjEuNgpyN2p4NCtsN1NvdmxqNE1xUG54VXFCYWNidmp4NDBxSWRybDB1NFJ0ZWtPUnlvVjZDNHZHaDFwakYvSjJiZTVacWFRYjF1eXFQaWZGL2JZc0pLR21CQT09Cg==",
-      "url": "https://github.com/Korosoft-Team/mdm-releases/releases/download/gestor-v0.1.6/MDM.MultiCulture.Play.-.Gestor_0.1.6_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUV2k4N3JYMzNrbXdRZUQ5WlhIQy91MzBuNWs1dUw3MityQU0xZ3V1K0lhUENYMVQ5T1E5VTdLZ2xjbGkyWHJhVnIzYTRlWlk4cWpFUXNGc0FHazZXM0J4UGtqY0JrandVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NTA2MjE4CWZpbGU6TURNIE11bHRpQ3VsdHVyZS5QbGF5IC0gR2VzdG9yXzAuMS43X3g2NC1zZXR1cC5leGUJdmVyc2lvbjowLjEuNwo1ZlF2QmVTREd4Z0RTNVR6S0xQZS8ydENMSzFPNVMyckxIR0ZKT1hZQ3hJR1BUVzZVL3dUS3dlRnZZd0VMY3NZdWgwRGtzWkVtLzM4TDBmNUtvV3lEdz09Cg==",
+      "url": "https://github.com/Korosoft-Team/mdm-releases/releases/download/gestor-v0.1.7/MDM.MultiCulture.Play.-.Gestor_0.1.7_x64-setup.exe"
     }
   }
 }
